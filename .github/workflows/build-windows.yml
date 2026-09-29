@@ -6,6 +6,13 @@ on:
 permissions:
   contents: write
 
+env:
+  RUST_VERSION: "1.75"
+  LLVM_VERSION: "15.0.6"
+  FLUTTER_VERSION: "3.24.5"
+  VCPKG_BINARY_SOURCES: "clear;x-gha,readwrite"
+  VCPKG_COMMIT_ID: "9e593bb18ea69cc5095e012465dcd675a822ed0d"
+
 jobs:
   generate-bridge:
     uses: ./.github/workflows/bridge.yml
@@ -16,10 +23,7 @@ jobs:
       fail-fast: false
       matrix:
         job:
-          - {
-              target: windows-2022,
-              platform: x64,
-            }
+          - { target: windows-2022, platform: x64 }
     with:
       upload-artifact: true
       target: ${{ matrix.job.target }}
@@ -32,75 +36,103 @@ jobs:
     needs: [build-RustDeskTempTopMostWindow, generate-bridge]
     runs-on: windows-2022
     steps:
+      - name: Export GitHub Actions cache variables
+        uses: actions/github-script@v6
+        with:
+          script: |
+            core.exportVariable('ACTIONS_CACHE_URL', process.env.ACTIONS_CACHE_URL || '');
+            core.exportVariable('ACTIONS_RUNTIME_TOKEN', process.env.ACTIONS_RUNTIME_TOKEN || '');
+
       - name: Checkout Source Code with Submodules
         uses: actions/checkout@v4
         with:
           submodules: recursive
 
-      - name: Install LLVM and Clang
-        uses: KyleMayes/install-llvm-action@v2
-        with:
-          version: "15.0.7"
-
-      - name: Install Rust Toolchain
-        uses: dtolnay/rust-toolchain@stable
-        with:
-          targets: x86_64-pc-windows-msvc
-
-      - name: Set up Flutter SDK
-        uses: subosito/flutter-action@v2
-        with:
-          channel: "stable"
-          flutter-version: "3.24.x"
-          cache: true
-
       - name: Restore Bridge Artifacts
         uses: actions/download-artifact@v4
         with:
           name: bridge-artifact
-          path: .
+          path: ./
 
-      - name: Restore TopMostWindow Artifact
+      - name: Install LLVM and Clang
+        uses: KyleMayes/install-llvm-action@v2
+        with:
+          version: ${{ env.LLVM_VERSION }}
+
+      - name: Install Flutter SDK
+        id: flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: "stable"
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          architecture: x64
+
+      - name: Replace engine with RustDesk custom Flutter engine
+        run: |
+          flutter doctor -v
+          flutter precache --windows
+          Invoke-WebRequest -Uri https://github.com/rustdesk/engine/releases/download/main/windows-x64-release.zip -OutFile windows-x64-release.zip
+          Expand-Archive -Path windows-x64-release.zip -DestinationPath windows-x64-release
+          mv -Force windows-x64-release/* C:/hostedtoolcache/windows/flutter/stable-${{ env.FLUTTER_VERSION }}-x64/bin/cache/artifacts/engine/windows-x64-release/
+
+      - name: Patch Flutter Dropdown
+        shell: bash
+        run: |
+          cp .github/patches/flutter_3.24.4_dropdown_menu_enableFilter.diff $(dirname $(dirname $(which flutter)))
+          cd $(dirname $(dirname $(which flutter)))
+          if [[ "3.24.5" == ${{ env.FLUTTER_VERSION }} ]]; then
+            git apply flutter_3.24.4_dropdown_menu_enableFilter.diff
+          fi
+
+      - name: Install Rust Toolchain
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: ${{ env.RUST_VERSION }}
+          targets: x86_64-pc-windows-msvc
+          components: "rustfmt"
+
+      - uses: Swatinem/rust-cache@v2
+        with:
+          prefix-key: windows-2022
+
+      - name: Setup vcpkg with GitHub Actions cache
+        uses: lukka/run-vcpkg@v11
+        with:
+          vcpkgDirectory: C:\vcpkg
+          vcpkgGitCommitId: ${{ env.VCPKG_COMMIT_ID }}
+          doNotCache: false
+
+      - name: Install vcpkg Dependencies
+        env:
+          VCPKG_DEFAULT_HOST_TRIPLET: x64-windows-static
+        run: |
+          if ! $VCPKG_ROOT/vcpkg install --triplet x64-windows-static --x-install-root="$VCPKG_ROOT/installed"; then
+            find "${VCPKG_ROOT}/" -name "*.log" | while read -r _1; do
+              echo "$_1:"
+              cat "$_1"
+            done
+            exit 1
+          fi
+        shell: bash
+
+      - name: Build RustDesk via build.py
+        run: |
+          python3 .\build.py --portable --flutter --skip-portable-pack --hwcodec --vram
+          mv ./flutter/build/windows/x64/runner/Release ./rustdesk
+          Invoke-WebRequest -Uri https://github.com/rustdesk-org/rdev/releases/download/usbmmidd_v2/usbmmidd_v2.zip -OutFile usbmmidd_v2.zip
+          Expand-Archive usbmmidd_v2.zip -DestinationPath .
+          Remove-Item -Path usbmmidd_v2\Win32 -Recurse
+          Remove-Item -Path "usbmmidd_v2\deviceinstaller64.exe", "usbmmidd_v2\deviceinstaller.exe", "usbmmidd_v2\usbmmidd.bat"
+          mv -Force .\usbmmidd_v2 ./rustdesk
+
+      - name: Download TopMostWindow Artifact
         uses: actions/download-artifact@v4
         with:
           name: topmostwindow-artifacts-x64
-          path: flutter/windows/runner/resources
+          path: ./rustdesk
 
-      - name: Ensure TopMostWindow Binary Placement
-        shell: pwsh
-        run: |
-          # Ensure the binary is at the exact root of resources/
-          $exe = Get-ChildItem -Path "flutter/windows/runner/resources" -Recurse -Filter "RustDeskTempTopMostWindow.exe" -ErrorAction SilentlyContinue | Select-Object -First 1
-          if ($exe -and $exe.DirectoryName -ne (Resolve-Path "flutter/windows/runner/resources").Path) {
-            Copy-Item -Path $exe.FullName -Destination "flutter/windows/runner/resources/RustDeskTempTopMostWindow.exe" -Force
-          }
-
-      - name: Stage Driver & Virtual Display Bundle
-        shell: pwsh
-        run: |
-          Invoke-WebRequest -Uri "https://github.com/rustdesk-org/rdev/releases/download/usbmmidd_v2/usbmmidd_v2.zip" -OutFile "usbmmidd_v2.zip"
-          Expand-Archive "usbmmidd_v2.zip" -DestinationPath .
-          Remove-Item -Path "usbmmidd_v2\Win32" -Recurse -Force -ErrorAction SilentlyContinue
-          Remove-Item -Path "usbmmidd_v2\deviceinstaller64.exe", "usbmmidd_v2\deviceinstaller.exe", "usbmmidd_v2\usbmmidd.bat" -Force -ErrorAction SilentlyContinue
-          New-Item -ItemType Directory -Path "flutter/windows/runner/resources/usbmmidd_v2" -Force | Out-Null
-          Copy-Item -Path "usbmmidd_v2/*" -Destination "flutter/windows/runner/resources/usbmmidd_v2" -Recurse -Force
-
-      - name: Build Windows Flutter Release
-        shell: bash
-        run: |
-          cd flutter
-          flutter config --enable-windows-desktop
-          flutter pub get
-          flutter build windows --release
-
-      - name: Package Release Bundle
-        shell: pwsh
-        run: |
-          New-Item -ItemType Directory -Path "SpecterRemote_x64" -Force | Out-Null
-          Copy-Item -Path "flutter/build/windows/x64/runner/Release/*" -Destination "SpecterRemote_x64" -Recurse -Force
-
-      - name: Upload Windows x64 Executable Artifact
+      - name: Upload Specter Remote Client Artifact
         uses: actions/upload-artifact@v4
         with:
           name: SpecterRemote-Windows-x64
-          path: SpecterRemote_x64/
+          path: rustdesk/
