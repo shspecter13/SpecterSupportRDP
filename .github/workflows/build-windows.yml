@@ -65,18 +65,32 @@ jobs:
           name: topmostwindow-artifacts-x64
           path: flutter/windows/runner/resources
 
+      - name: Stage Driver Bundle and Virtual Monitor Helpers
+        shell: pwsh
+        run: |
+          Invoke-WebRequest -Uri "https://github.com/rustdesk-org/rdev/releases/download/usbmmidd_v2/usbmmidd_v2.zip" -OutFile "usbmmidd_v2.zip"
+          Expand-Archive "usbmmidd_v2.zip" -DestinationPath .
+          Remove-Item -Path "usbmmidd_v2\Win32" -Recurse -Force -ErrorAction SilentlyContinue
+          Remove-Item -Path "usbmmidd_v2\deviceinstaller64.exe", "usbmmidd_v2\deviceinstaller.exe", "usbmmidd_v2\usbmmidd.bat" -Force -ErrorAction SilentlyContinue
+          New-Item -ItemType Directory -Path "flutter/windows/runner/resources/usbmmidd_v2" -Force | Out-Null
+          Copy-Item -Path "usbmmidd_v2/*" -Destination "flutter/windows/runner/resources/usbmmidd_v2" -Recurse -Force
+
       - name: Build Windows Flutter App
+        shell: bash
         run: |
           cd flutter
           flutter config --enable-windows-desktop
           flutter pub get
           flutter build windows --release
 
+      - name: Package Output Binaries
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Path "build_output" -Force | Out-Null
+          Copy-Item -Path "flutter/build/windows/x64/runner/Release/*" -Destination "build_output" -Recurse -Force
+
       - name: Upload Windows x64 Executable Artifact
         uses: actions/upload-artifact@v4
         with:
           name: SpecterRemote-Windows-x64
-          path: |
-            flutter/build/windows/x64/runner/Release/*.exe
-            flutter/build/windows/x64/runner/Release/*.dll
-            flutter/build/windows/x64/runner/Release/data/
+          path: build_output/
