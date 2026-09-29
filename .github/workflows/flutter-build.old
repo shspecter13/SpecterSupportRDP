@@ -58,6 +58,34 @@ env:
   SIGN_BASE_URL: "${{ secrets.SIGN_BASE_URL }}-2"
 
 jobs:
+  generate-sbom:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+        with:
+          submodules: recursive
+
+      - name: Install Syft
+        uses: anchore/sbom-action/download-syft@v0
+
+      - name: Generate SBOM
+        run: |
+          syft dir:. \
+            -o cyclonedx-json=rustdesk.sbom.json
+
+      - name: Publish Release
+        uses: softprops/action-gh-release@de2c0eb89ae2a093876385947365aca7b0e5f844 # v1
+        if: env.UPLOAD_ARTIFACT == 'true'
+        with:
+          prerelease: true
+          tag_name: ${{ env.TAG_NAME }}
+          files: |
+            rustdesk.sbom.json
+
   generate-bridge:
     uses: ./.github/workflows/bridge.yml
 
@@ -71,8 +99,12 @@ jobs:
               target: windows-2022,
               platform: x64,
             }
+          - {
+              target: windows-11-arm,
+              platform: ARM64,
+            }
     with:
-      upload-artifact: ${{ inputs.upload-artifact || true }}
+      upload-artifact: ${{ inputs.upload-artifact }}
       target: ${{ matrix.job.target }}
       configuration: Release
       platform: ${{ matrix.job.platform }}
@@ -86,6 +118,8 @@ jobs:
       fail-fast: false
       matrix:
         job:
+          # - { target: i686-pc-windows-msvc        , os: windows-2022                  }
+          # - { target: x86_64-pc-windows-gnu       , os: windows-2022                  }
           - {
               target: x86_64-pc-windows-msvc,
               os: windows-2022,
@@ -93,6 +127,16 @@ jobs:
               flutter-arch: x64,
               vcpkg-triplet: x64-windows-static,
               build-args: "--vram",
+            }
+          - {
+              target: aarch64-pc-windows-msvc,
+              os: windows-11-arm,
+              arch: aarch64,
+              flutter-arch: arm64,
+              vcpkg-triplet: arm64-windows-static,
+              # vram is x86/x64-only (NVENC needs CUDA, Intel MediaSDK needs __rdtsc);
+              # no NV/Intel/AMD hardware exists on Windows-on-ARM, so vram stays disabled here.
+              build-args: "",
             }
     steps:
       - name: Export GitHub Actions cache environment variables
