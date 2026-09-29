@@ -1,0 +1,76 @@
+name: Build Windows Client
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  generate-bridge:
+    uses: ./.github/workflows/bridge.yml
+
+  build-RustDeskTempTopMostWindow:
+    uses: ./.github/workflows/third-party-RustDeskTempTopMostWindow.yml
+    strategy:
+      fail-fast: false
+      matrix:
+        job:
+          - {
+              target: windows-2022,
+              platform: x64,
+            }
+    with:
+      upload-artifact: true
+      target: ${{ matrix.job.target }}
+      configuration: Release
+      platform: ${{ matrix.job.platform }}
+      target_version: Windows10
+
+  build-for-windows-flutter:
+    name: Build Windows x64 Executable
+    needs: [build-RustDeskTempTopMostWindow, generate-bridge]
+    runs-on: windows-2022
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Install LLVM and Clang
+        uses: KyleMayes/install-llvm-action@v2
+        with:
+          version: "15.0.7"
+
+      - name: Install Rust Toolchain
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: x86_64-pc-windows-msvc
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: "stable"
+          flutter-version: "3.24.x"
+          cache: true
+
+      - name: Download RustDeskTempTopMostWindow Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: RustDeskTempTopMostWindow-windows-2022-x64
+          path: flutter/windows/runner/resources
+
+      - name: Build Windows Flutter App
+        run: |
+          cd flutter
+          flutter config --enable-windows-desktop
+          flutter pub get
+          flutter build windows --release
+
+      - name: Upload Windows x64 Executable Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: SpecterRemote-Windows-x64
+          path: |
+            flutter/build/windows/x64/runner/Release/*.exe
+            flutter/build/windows/x64/runner/Release/*.dll
+            flutter/build/windows/x64/runner/Release/data/
