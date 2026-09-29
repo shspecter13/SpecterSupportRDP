@@ -53,10 +53,16 @@ jobs:
           flutter-version: "3.24.x"
           cache: true
 
-      - name: Download RustDeskTempTopMostWindow Artifact
+      - name: Download Bridge Artifact
         uses: actions/download-artifact@v4
         with:
-          name: RustDeskTempTopMostWindow-windows-2022-x64
+          name: bridge-artifact
+          path: .
+
+      - name: Download TopMostWindow Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: topmostwindow-artifacts-x64
           path: flutter/windows/runner/resources
 
       - name: Build Windows Flutter App
