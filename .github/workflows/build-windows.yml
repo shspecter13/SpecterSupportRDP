@@ -32,7 +32,8 @@ jobs:
     needs: [build-RustDeskTempTopMostWindow, generate-bridge]
     runs-on: windows-2022
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout Source Code with Submodules
+        uses: actions/checkout@v4
         with:
           submodules: recursive
 
@@ -46,26 +47,35 @@ jobs:
         with:
           targets: x86_64-pc-windows-msvc
 
-      - name: Set up Flutter
+      - name: Set up Flutter SDK
         uses: subosito/flutter-action@v2
         with:
           channel: "stable"
           flutter-version: "3.24.x"
           cache: true
 
-      - name: Download Bridge Artifact
+      - name: Restore Bridge Artifacts
         uses: actions/download-artifact@v4
         with:
           name: bridge-artifact
           path: .
 
-      - name: Download TopMostWindow Artifact
+      - name: Restore TopMostWindow Artifact
         uses: actions/download-artifact@v4
         with:
           name: topmostwindow-artifacts-x64
           path: flutter/windows/runner/resources
 
-      - name: Stage Driver Bundle and Virtual Monitor Helpers
+      - name: Ensure TopMostWindow Binary Placement
+        shell: pwsh
+        run: |
+          # Ensure the binary is at the exact root of resources/
+          $exe = Get-ChildItem -Path "flutter/windows/runner/resources" -Recurse -Filter "RustDeskTempTopMostWindow.exe" -ErrorAction SilentlyContinue | Select-Object -First 1
+          if ($exe -and $exe.DirectoryName -ne (Resolve-Path "flutter/windows/runner/resources").Path) {
+            Copy-Item -Path $exe.FullName -Destination "flutter/windows/runner/resources/RustDeskTempTopMostWindow.exe" -Force
+          }
+
+      - name: Stage Driver & Virtual Display Bundle
         shell: pwsh
         run: |
           Invoke-WebRequest -Uri "https://github.com/rustdesk-org/rdev/releases/download/usbmmidd_v2/usbmmidd_v2.zip" -OutFile "usbmmidd_v2.zip"
@@ -75,7 +85,7 @@ jobs:
           New-Item -ItemType Directory -Path "flutter/windows/runner/resources/usbmmidd_v2" -Force | Out-Null
           Copy-Item -Path "usbmmidd_v2/*" -Destination "flutter/windows/runner/resources/usbmmidd_v2" -Recurse -Force
 
-      - name: Build Windows Flutter App
+      - name: Build Windows Flutter Release
         shell: bash
         run: |
           cd flutter
@@ -83,14 +93,14 @@ jobs:
           flutter pub get
           flutter build windows --release
 
-      - name: Package Output Binaries
+      - name: Package Release Bundle
         shell: pwsh
         run: |
-          New-Item -ItemType Directory -Path "build_output" -Force | Out-Null
-          Copy-Item -Path "flutter/build/windows/x64/runner/Release/*" -Destination "build_output" -Recurse -Force
+          New-Item -ItemType Directory -Path "SpecterRemote_x64" -Force | Out-Null
+          Copy-Item -Path "flutter/build/windows/x64/runner/Release/*" -Destination "SpecterRemote_x64" -Recurse -Force
 
       - name: Upload Windows x64 Executable Artifact
         uses: actions/upload-artifact@v4
         with:
           name: SpecterRemote-Windows-x64
-          path: build_output/
+          path: SpecterRemote_x64/
