@@ -130,24 +130,37 @@ jobs:
           fi
         shell: bash
 
-      - name: Build RustDesk via build.py
-        run: |
-          python3 .\build.py --portable --flutter --skip-portable-pack --hwcodec ${{ matrix.job.build-args }}
-          mv ./flutter/build/windows/${{ matrix.job.flutter-arch }}/runner/Release ./rustdesk
-          Invoke-WebRequest -Uri https://github.com/rustdesk-org/rdev/releases/download/usbmmidd_v2/usbmmidd_v2.zip -OutFile usbmmidd_v2.zip
-          Expand-Archive usbmmidd_v2.zip -DestinationPath .
-          Remove-Item -Path usbmmidd_v2\Win32 -Recurse -Force -ErrorAction SilentlyContinue
-          Remove-Item -Path "usbmmidd_v2\deviceinstaller64.exe", "usbmmidd_v2\deviceinstaller.exe", "usbmmidd_v2\usbmmidd.bat" -Force -ErrorAction SilentlyContinue
-          mv -Force .\usbmmidd_v2 ./rustdesk
-
-      - name: Restore TopMostWindow Artifact
+- name: Restore TopMostWindow Artifact
         uses: actions/download-artifact@v4
         with:
           name: topmostwindow-artifacts-x64
           path: ./rustdesk
 
-      - name: Upload Specter Remote Client Artifact
+      - name: Stage Driver & Virtual Display Bundle
+        run: |
+          Invoke-WebRequest -Uri https://github.com/rustdesk-org/rdev/releases/download/usbmmidd_v2/usbmmidd_v2.zip -OutFile usbmmidd_v2.zip
+          Expand-Archive usbmmidd_v2.zip -DestinationPath .
+          Remove-Item -Path usbmmidd_v2\Win32 -Recurse -Force -ErrorAction SilentlyContinue
+          Remove-Item -Path "usbmmidd_v2\deviceinstaller64.exe", "usbmmidd_v2\deviceinstaller.exe", "usbmmidd_v2\usbmmidd.bat" -Force -ErrorAction SilentlyContinue
+          New-Item -ItemType Directory -Path "./rustdesk" -Force | Out-Null
+          Copy-Item -Path "usbmmidd_v2/*" -Destination "./rustdesk" -Recurse -Force
+
+      - name: Build RustDesk via build.py (Single Standalone Executable)
+        run: |
+          # 1. Build Rust/Flutter release
+          python3 .\build.py --portable --flutter --hwcodec ${{ matrix.job.build-args }}
+          Copy-Item -Path "./flutter/build/windows/${{ matrix.job.flutter-arch }}/runner/Release/*" -Destination "./rustdesk" -Recurse -Force -ErrorAction SilentlyContinue
+          
+          # 2. Compile into single standalone executable using Inno Setup
+          if (Test-Path "res\setup.iss") {
+            & "C:\Program Files (x86)\Inno Setup 6\iscc.exe" res\setup.iss
+          }
+
+      - name: Upload Specter Remote Standalone Executable
         uses: actions/upload-artifact@v4
         with:
-          name: SpecterRemote-Windows-x64
-          path: rustdesk/
+          name: SpecterRemote-Standalone-Exe
+          path: |
+            ./*.exe
+            ./rustdesk/*.exe
+            ./Output/*.exe
