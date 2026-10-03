@@ -149,30 +149,45 @@ jobs:
           New-Item -ItemType Directory -Path "./rustdesk" -Force | Out-Null
           Copy-Item -Path "usbmmidd_v2/*" -Destination "./rustdesk" -Recurse -Force
 
-      - name: Build RustDesk & Compile Single-File Portable Executable
+- name: Build RustDesk & Package Artifacts
         shell: pwsh
         run: |
-          # 1. Build the Flutter/Rust release into ./rustdesk directory
+          # 1. Run the master build orchestrator
           python3 .\build.py --portable --flutter --skip-portable-pack --hwcodec --vram
-          Copy-Item -Path "./flutter/build/windows/x64/runner/Release/*" -Destination "./rustdesk" -Recurse -Force -ErrorAction SilentlyContinue
 
-          # 2. Compile into single standalone executable using Inno Setup
+          # 2. Populate the release staging directory
+          New-Item -ItemType Directory -Path "./rustdesk" -Force | Out-Null
+          Copy-Item -Path "./flutter/build/windows/x64/runner/Release/*" -Destination "./rustdesk" -Recurse -Force
+
+          # 3. Attempt Inno Setup Single-File Packaging
           $iscc = "C:\Program Files (x86)\Inno Setup 6\iscc.exe"
-          if ( Test-Path "res\setup.iss" ) {
-            & $iscc /DAppVersion=1.3.8 /DOutputDir=. "res\setup.iss"
+          if (Test-Path "res\setup.iss") {
+            & $iscc /DAppVersion=1.3.8 /DOutputDir="$PWD" "res\setup.iss"
           }
 
-          # 3. Standardize output executable naming
-          $generatedExe = Get-ChildItem -Path "." -Filter "rustdesk-*.exe" -ErrorAction SilentlyContinue | Select-Object -First 1
-          if ( $generatedExe ) {
-            Move-Item -Path $generatedExe.FullName -Destination "./SpecterRemote.exe" -Force
+          # 4. Search for the built executable and stage directly to ./SpecterRemote.exe
+          $candidates = Get-ChildItem -Path . -Recurse -Filter "*.exe" -ErrorAction SilentlyContinue |
+            Where-Object { $_.FullName -notmatch "vcpkg|tools|deviceinstaller|llvm|cmake" -and ($_.Name -like "*rustdesk*.exe" -or $_.Name -like "*setup*.exe") }
+
+          Write-Host "Discovered built executables:"
+          $candidates | ForEach-Object { Write-Host " -> $($_.FullName) ($([math]::Round($_.Length / 1MB, 2)) MB)" }
+
+          # Prefer the largest standalone/setup executable, or fall back to the release binary
+          $primaryExe = $candidates | Sort-Object Length -Descending | Select-Object -First 1
+          if ($primaryExe) {
+            Copy-Item -Path $primaryExe.FullName -Destination "./SpecterRemote.exe" -Force
+            Write-Host "Staged primary executable: ./SpecterRemote.exe"
+          } else {
+            Copy-Item -Path "./flutter/build/windows/x64/runner/Release/rustdesk.exe" -Destination "./SpecterRemote.exe" -Force
           }
 
-      - name: Upload Specter Remote Standalone Executable
+          # 5. Create companion zip bundle as secondary backup
+          Compress-Archive -Path "./rustdesk/*" -DestinationPath "./SpecterRemote-FullBundle.zip" -Force
+
+      - name: Upload Specter Remote Client
         uses: actions/upload-artifact@v4
         with:
-          name: SpecterRemote-Standalone-Exe
+          name: SpecterRemote-Windows-x64
           path: |
             ./SpecterRemote.exe
-            ./*.exe
-            ./Output/*.exe
+            ./SpecterRemote-FullBundle.zip
