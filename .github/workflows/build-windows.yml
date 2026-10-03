@@ -2,6 +2,9 @@ name: Build Windows Client
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - master
 
 permissions:
   contents: write
@@ -130,13 +133,14 @@ jobs:
           fi
         shell: bash
 
-- name: Restore TopMostWindow Artifact
+      - name: Restore TopMostWindow Artifact
         uses: actions/download-artifact@v4
         with:
           name: topmostwindow-artifacts-x64
           path: ./rustdesk
 
       - name: Stage Driver & Virtual Display Bundle
+        shell: pwsh
         run: |
           Invoke-WebRequest -Uri https://github.com/rustdesk-org/rdev/releases/download/usbmmidd_v2/usbmmidd_v2.zip -OutFile usbmmidd_v2.zip
           Expand-Archive usbmmidd_v2.zip -DestinationPath .
@@ -145,15 +149,23 @@ jobs:
           New-Item -ItemType Directory -Path "./rustdesk" -Force | Out-Null
           Copy-Item -Path "usbmmidd_v2/*" -Destination "./rustdesk" -Recurse -Force
 
-      - name: Build RustDesk via build.py (Single Standalone Executable)
+      - name: Build RustDesk & Compile Single-File Portable Executable
+        shell: pwsh
         run: |
-          # 1. Build Rust/Flutter release
-          python3 .\build.py --portable --flutter --hwcodec ${{ matrix.job.build-args }}
-          Copy-Item -Path "./flutter/build/windows/${{ matrix.job.flutter-arch }}/runner/Release/*" -Destination "./rustdesk" -Recurse -Force -ErrorAction SilentlyContinue
-          
+          # 1. Build the Flutter/Rust release into ./rustdesk directory
+          python3 .\build.py --portable --flutter --skip-portable-pack --hwcodec --vram
+          Copy-Item -Path "./flutter/build/windows/x64/runner/Release/*" -Destination "./rustdesk" -Recurse -Force -ErrorAction SilentlyContinue
+
           # 2. Compile into single standalone executable using Inno Setup
-          if (Test-Path "res\setup.iss") {
-            & "C:\Program Files (x86)\Inno Setup 6\iscc.exe" res\setup.iss
+          $iscc = "C:\Program Files (x86)\Inno Setup 6\iscc.exe"
+          if ( Test-Path "res\setup.iss" ) {
+            & $iscc /DAppVersion=1.3.8 /DOutputDir=. "res\setup.iss"
+          }
+
+          # 3. Standardize output executable naming
+          $generatedExe = Get-ChildItem -Path "." -Filter "rustdesk-*.exe" -ErrorAction SilentlyContinue | Select-Object -First 1
+          if ( $generatedExe ) {
+            Move-Item -Path $generatedExe.FullName -Destination "./SpecterRemote.exe" -Force
           }
 
       - name: Upload Specter Remote Standalone Executable
@@ -161,6 +173,6 @@ jobs:
         with:
           name: SpecterRemote-Standalone-Exe
           path: |
+            ./SpecterRemote.exe
             ./*.exe
-            ./rustdesk/*.exe
             ./Output/*.exe
