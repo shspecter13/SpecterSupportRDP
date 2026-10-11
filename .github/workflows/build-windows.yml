@@ -144,42 +144,33 @@ jobs:
           New-Item -ItemType Directory -Path "./rustdesk" -Force | Out-Null
           Copy-Item -Path "./flutter/build/windows/x64/runner/Release/*" -Destination "./rustdesk" -Recurse -Force
 
-          # 3. Attempt Inno Setup Single-File Packaging
-          # In build-windows.yml (Inno Setup step):
-          $iscc = "C:\Program Files (x86)\Inno Setup 6\iscc.exe"
-          if ( Test-Path "res\setup.iss" ) {
-              & $iscc /DAppVersion=1.3.8 /DOutputDir="$PWD" "res\setup.iss"
-          }
+      - name: Build RustDesk Binaries
+        shell: pwsh
+        run: |
+          # 1. Run master build orchestrator
+          python3 .\build.py --portable --flutter --skip-portable-pack --hwcodec --vram
 
-          # Recursively locate the Inno Setup output file (whether in ./, Output/, or res/Output/)
-          $innoOutput = Get-ChildItem -Path . -Recurse -Filter "rustdesk*setup*.exe" -ErrorAction SilentlyContinue | Select-Object -First 1
-          if ( $innoOutput ) {
-              Copy-Item -Path $innoOutput.FullName -Destination "./SpecterRemote.exe" -Force
-              Write-Host "Successfully captured Inno Setup portable binary: $($innoOutput.FullName)"
-          } else {
-              # Fallback to the largest candidate
-              $fallback = Get-ChildItem -Path . -Recurse -Filter "*.exe" | Where-Object { $_.FullName -notmatch "vcpkg|tools|deviceinstaller" } | Sort-Object Length -Descending | Select-Object -First 1
-              Copy-Item -Path $fallback.FullName -Destination "./SpecterRemote.exe" -Force
-          }
+          # 2. Ensure release staging directory exists and is populated
+          New-Item -ItemType Directory -Path "./rustdesk" -Force | Out-Null
+          Copy-Item -Path "./flutter/build/windows/x64/runner/Release/*" -Destination "./rustdesk" -Recurse -Force
 
-          # 4. Search and stage standalone executable
-          $candidates = Get-ChildItem -Path . -Recurse -Filter "*.exe" -ErrorAction SilentlyContinue |
-            Where-Object { $_.FullName -notmatch "vcpkg|tools|deviceinstaller|llvm|cmake" -and ($_.Name -like "*rustdesk*.exe" -or $_.Name -like "*setup*.exe") }
+      - name: Build Self-Extracted Standalone Executable
+        shell: bash
+        run: |
+          # 1. Strip DPI line for manifest compatibility
+          sed -i '/dpiAware/d' res/manifest.xml
 
-          $primaryExe = $candidates | Sort-Object Length -Descending | Select-Object -First 1
-          if ($primaryExe) {
-            Copy-Item -Path $primaryExe.FullName -Destination "./SpecterRemote.exe" -Force
-          } else {
-            Copy-Item -Path "./flutter/build/windows/x64/runner/Release/rustdesk.exe" -Destination "./SpecterRemote.exe" -Force
-          }
+          # 2. Run RustDesk's official portable packer on the ./rustdesk bundle
+          pushd ./libs/portable
+          pip3 install -r requirements.txt
+          python3 ./generate.py -f ../../rustdesk/ -o . -e ../../rustdesk/rustdesk.exe
+          popd
 
-          # 5. Create companion zip bundle
-          Compress-Archive -Path "./rustdesk/*" -DestinationPath "./SpecterRemote-FullBundle.zip" -Force
+          # 3. Rename output to SpecterRemote.exe
+          cp ./target/release/rustdesk-portable-packer.exe ./SpecterRemote.exe
 
-      - name: Upload Specter Remote Client
+      - name: Upload Specter Remote Standalone Executable
         uses: actions/upload-artifact@v4
         with:
-          name: SpecterRemote-Windows-x64
-          path: |
-            ./SpecterRemote.exe
-            ./SpecterRemote-FullBundle.zip
+          name: SpecterRemote-Standalone-Exe
+          path: ./SpecterRemote.exe
