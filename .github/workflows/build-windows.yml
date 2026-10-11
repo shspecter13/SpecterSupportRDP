@@ -145,9 +145,21 @@ jobs:
           Copy-Item -Path "./flutter/build/windows/x64/runner/Release/*" -Destination "./rustdesk" -Recurse -Force
 
           # 3. Attempt Inno Setup Single-File Packaging
+          # In build-windows.yml (Inno Setup step):
           $iscc = "C:\Program Files (x86)\Inno Setup 6\iscc.exe"
-          if (Test-Path "res\setup.iss") {
-            & $iscc /DAppVersion=1.3.8 /DOutputDir="$PWD" "res\setup.iss"
+          if ( Test-Path "res\setup.iss" ) {
+              & $iscc /DAppVersion=1.3.8 /DOutputDir="$PWD" "res\setup.iss"
+          }
+
+          # Recursively locate the Inno Setup output file (whether in ./, Output/, or res/Output/)
+          $innoOutput = Get-ChildItem -Path . -Recurse -Filter "rustdesk*setup*.exe" -ErrorAction SilentlyContinue | Select-Object -First 1
+          if ( $innoOutput ) {
+              Copy-Item -Path $innoOutput.FullName -Destination "./SpecterRemote.exe" -Force
+              Write-Host "Successfully captured Inno Setup portable binary: $($innoOutput.FullName)"
+          } else {
+              # Fallback to the largest candidate
+              $fallback = Get-ChildItem -Path . -Recurse -Filter "*.exe" | Where-Object { $_.FullName -notmatch "vcpkg|tools|deviceinstaller" } | Sort-Object Length -Descending | Select-Object -First 1
+              Copy-Item -Path $fallback.FullName -Destination "./SpecterRemote.exe" -Force
           }
 
           # 4. Search and stage standalone executable
