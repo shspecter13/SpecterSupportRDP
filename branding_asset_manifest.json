@@ -10,10 +10,10 @@
         256
       ]
     ],
-    "color_mode": "P",
+    "color_mode": "RGBA",
     "has_alpha_channel": true,
     "architectural_purpose": "Android Store Listing Master Icon (256x256)",
-    "file_size_bytes": 6312
+    "file_size_bytes": 10310
   },
   {
     "relative_file_path": "flutter/android/app/src/main/res/mipmap-hdpi/ic_launcher.png",
@@ -29,7 +29,7 @@
     "color_mode": "RGBA",
     "has_alpha_channel": true,
     "architectural_purpose": "Android Standard App Launcher Icon",
-    "file_size_bytes": 3479
+    "file_size_bytes": 3237
   },
   {
     "relative_file_path": "flutter/android/app/src/main/res/mipmap-hdpi/ic_launcher_foreground.png",
@@ -45,7 +45,7 @@
     "color_mode": "RGBA",
     "has_alpha_channel": true,
     "architectural_purpose": "Android Adaptive Icon Foreground Layer",
-    "file_size_bytes": 6026
+    "file_size_bytes": 10325
   },
   {
     "relative_file_path": "flutter/android/app/src/main/res/mipmap-hdpi/ic_launcher_round.png",
@@ -61,7 +61,7 @@
     "color_mode": "RGBA",
     "has_alpha_channel": true,
     "architectural_purpose": "Android Round Launcher Icon",
-    "file_size_bytes": 5107
+    "file_size_bytes": 3237
   },
   {
     "relative_file_path": "flutter/android/app/src/main/res/mipmap-hdpi/ic_stat_logo.png",
@@ -74,10 +74,10 @@
         36
       ]
     ],
-    "color_mode": "LA",
+    "color_mode": "RGBA",
     "has_alpha_channel": true,
     "architectural_purpose": "Android Notification Status Bar Icon",
-    "file_size_bytes": 487
+    "file_size_bytes": 1267
   },
   {
     "relative_file_path": "flutter/android/app/src/main/res/mipmap-mdpi/ic_launcher.png",
@@ -93,7 +93,7 @@
     "color_mode": "RGBA",
     "has_alpha_channel": true,
     "architectural_purpose": "Android Standard App Launcher Icon",
-    "file_size_bytes": 1987
+    "file_size_bytes": 1879
   },
   {
     "relative_file_path": "flutter/android/app/src/main/res/mipmap-mdpi/ic_launcher_foreground.png",
@@ -109,7 +109,7 @@
     "color_mode": "RGBA",
     "has_alpha_channel": true,
     "architectural_purpose": "Android Adaptive Icon Foreground Layer",
-    "file_size_bytes": 3641
+    "file_size_bytes": 5800
   },
   {
     "relative_file_path": "flutter/android/app/src/main/res/mipmap-mdpi/ic_launcher_round.png",
@@ -125,7 +125,7 @@
     "color_mode": "RGBA",
     "has_alpha_channel": true,
     "architectural_purpose": "Android Round Launcher Icon",
-    "file_size_bytes": 3017
+    "file_size_bytes": 1879
   },
   {
     "relative_file_path": "flutter/android/app/src/main/res/mipmap-mdpi/ic_stat_logo.png",
@@ -138,10 +138,10 @@
         24
       ]
     ],
-    "color_mode": "LA",
+    "color_mode": "RGBA",
     "has_alpha_channel": true,
     "architectural_purpose": "Android Notification Status Bar Icon",
-    "file_size_bytes": 383
+    "file_size_bytes": 832
   },
   {
     "relative_file_path": "flutter/android/app/src/main/res/mipmap-xhdpi/ic_launcher.png",
@@ -157,7 +157,7 @@
     "color_mode": "RGBA",
     "has_alpha_channel": true,
     "architectural_purpose": "Android Standard App Launcher Icon",
-    "file_size_bytes": 4237
+    "file_size_bytes": 4883
   },
   {
     "relative_file_path": "flutter/android/app/src/main/res/mipmap-xhdpi/ic_launcher_foreground.png",
@@ -173,7 +173,7 @@
     "color_mode": "RGBA",
     "has_alpha_channel": true,
     "architectural_purpose": "Android Adaptive Icon Foreground Layer",
-    "file_size_bytes": 7659
+    "file_size_bytes": 15502
   },
   {
     "relative_file_path": "flutter/android/app/src/main/res/mipmap-xhdpi/ic_launcher_round.png",
@@ -189,7 +189,7 @@
     "color_mode": "RGBA",
     "has_alpha_channel": true,
     "architectural_purpose": "Android Round Launcher Icon",
-    "file_size_bytes": 6202
+    "file_size_bytes": 4883
   },
   {
     "relative_file_path": "flutter/android/app/src/main/res/mipmap-xhdpi/ic_stat_logo.png",
@@ -202,10 +202,10 @@
         48
       ]
     ],
-    "color_mode": "LA",
+    "color_mode": "RGBA",
     "has_alpha_channel": true,
     "architectural_purpose": "Android Notification Status Bar Icon",
-    "file_size_bytes": 719
+    "file_size_bytes": 1879
   },
   {
     "relative_file_path": "flutter/android/app/src/main/res/mipmap-xxhdpi/ic_launcher.png",
@@ -221,7 +221,7 @@
     "color_mode": "RGBA",
     "has_alpha_channel": true,
     "architectural_purpose": "Android Standard App Launcher Icon",
-    "file_size_bytes": 7498
+    "file_size_bytes": 8638
   },
   {
     "relative_file_path": "flutter/android/app/src/main/res/mipmap-xxhdpi/ic_launcher_foreground.png",
@@ -237,7 +237,7 @@
     "color_mode": "RGBA",
     "has_alpha_channel": true,
     "architectural_purpose": "Android Adaptive Icon Foreground Layer",
-    "file_size_bytes": 22530
+    "file_size_bytes": 29448
   },
   {
     "relative_file_path": "flutter/android/app/src/main/res/mipmap-xxhdpi/ic_launcher_round.png",
@@ -253,7 +253,7 @@
     "color_mode": "RGBA",
     "has_alpha_channel": true,
     "architectural_purpose": "Android Round Launcher Icon",
-    "file_size_bytes": 10713
+    "file_size_bytes": 8638
   },
   {
     "relative_file_path": "flutter/android/app/src/main/res/mipmap-xxhdpi/ic_stat_logo.png",
@@ -266,10 +266,10 @@
         72
       ]
     ],
-    "color_mode": "LA",
+    "color_mode": "RGBA",
     "has_alpha_channel": true,
     "architectural_purpose": "Android Notification Status Bar Icon",
-    "file_size_bytes": 884
+    "file_size_bytes": 3237
   },
   {
     "relative_file_path": "flutter/android/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png",
@@ -285,7 +285,7 @@
     "color_mode": "RGBA",
     "has_alpha_channel": true,
     "architectural_purpose": "Android Standard App Launcher Icon",
-    "file_size_bytes": 7409
+    "file_size_bytes": 12604
   },
   {
     "relative_file_path": "flutter/android/app/src/main/res/mipmap-xxxhdpi/ic_launcher_foreground.png",
@@ -301,7 +301,7 @@
     "color_mode": "RGBA",
     "has_alpha_channel": true,
     "architectural_purpose": "Android Adaptive Icon Foreground Layer",
-    "file_size_bytes": 31138
+    "file_size_bytes": 48222
   },
   {
     "relative_file_path": "flutter/android/app/src/main/res/mipmap-xxxhdpi/ic_launcher_round.png",
@@ -317,7 +317,7 @@
     "color_mode": "RGBA",
     "has_alpha_channel": true,
     "architectural_purpose": "Android Round Launcher Icon",
-    "file_size_bytes": 11189
+    "file_size_bytes": 12604
   },
   {
     "relative_file_path": "flutter/android/app/src/main/res/mipmap-xxxhdpi/ic_stat_logo.png",
@@ -330,10 +330,26 @@
         96
       ]
     ],
-    "color_mode": "LA",
+    "color_mode": "RGBA",
     "has_alpha_channel": true,
     "architectural_purpose": "Android Notification Status Bar Icon",
-    "file_size_bytes": 1389
+    "file_size_bytes": 4883
+  },
+  {
+    "relative_file_path": "flutter/assets/icon.png",
+    "format": "PNG",
+    "extension": ".png",
+    "dimensions": "256x256",
+    "frame_sizes": [
+      [
+        256,
+        256
+      ]
+    ],
+    "color_mode": "RGBA",
+    "has_alpha_channel": true,
+    "architectural_purpose": "Application Branding Asset",
+    "file_size_bytes": 9748
   },
   {
     "relative_file_path": "flutter/assets/icon.svg",
@@ -349,7 +365,7 @@
     "color_mode": "Vector / XML",
     "has_alpha_channel": true,
     "architectural_purpose": "Flutter UI Application Brand Icon (Vector)",
-    "file_size_bytes": 1177
+    "file_size_bytes": 13214
   },
   {
     "relative_file_path": "flutter/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-1024x1024@1x.png",
@@ -362,10 +378,10 @@
         1024
       ]
     ],
-    "color_mode": "RGB",
-    "has_alpha_channel": false,
+    "color_mode": "RGBA",
+    "has_alpha_channel": true,
     "architectural_purpose": "iOS / iPadOS Application Bundle Icon",
-    "file_size_bytes": 32239
+    "file_size_bytes": 190076
   },
   {
     "relative_file_path": "flutter/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-20x20@1x.png",
@@ -378,10 +394,10 @@
         20
       ]
     ],
-    "color_mode": "RGB",
-    "has_alpha_channel": false,
+    "color_mode": "RGBA",
+    "has_alpha_channel": true,
     "architectural_purpose": "iOS / iPadOS Application Bundle Icon",
-    "file_size_bytes": 511
+    "file_size_bytes": 683
   },
   {
     "relative_file_path": "flutter/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-20x20@2x.png",
@@ -394,10 +410,10 @@
         40
       ]
     ],
-    "color_mode": "RGB",
-    "has_alpha_channel": false,
+    "color_mode": "RGBA",
+    "has_alpha_channel": true,
     "architectural_purpose": "iOS / iPadOS Application Bundle Icon",
-    "file_size_bytes": 989
+    "file_size_bytes": 1455
   },
   {
     "relative_file_path": "flutter/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-20x20@3x.png",
@@ -410,10 +426,10 @@
         60
       ]
     ],
-    "color_mode": "RGB",
-    "has_alpha_channel": false,
+    "color_mode": "RGBA",
+    "has_alpha_channel": true,
     "architectural_purpose": "iOS / iPadOS Application Bundle Icon",
-    "file_size_bytes": 1545
+    "file_size_bytes": 2504
   },
   {
     "relative_file_path": "flutter/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-29x29@1x.png",
@@ -426,10 +442,10 @@
         29
       ]
     ],
-    "color_mode": "RGB",
-    "has_alpha_channel": false,
+    "color_mode": "RGBA",
+    "has_alpha_channel": true,
     "architectural_purpose": "iOS / iPadOS Application Bundle Icon",
-    "file_size_bytes": 755
+    "file_size_bytes": 966
   },
   {
     "relative_file_path": "flutter/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-29x29@2x.png",
@@ -442,10 +458,10 @@
         58
       ]
     ],
-    "color_mode": "RGB",
-    "has_alpha_channel": false,
+    "color_mode": "RGBA",
+    "has_alpha_channel": true,
     "architectural_purpose": "iOS / iPadOS Application Bundle Icon",
-    "file_size_bytes": 1510
+    "file_size_bytes": 2445
   },
   {
     "relative_file_path": "flutter/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-29x29@3x.png",
@@ -458,10 +474,10 @@
         87
       ]
     ],
-    "color_mode": "RGB",
-    "has_alpha_channel": false,
+    "color_mode": "RGBA",
+    "has_alpha_channel": true,
     "architectural_purpose": "iOS / iPadOS Application Bundle Icon",
-    "file_size_bytes": 2299
+    "file_size_bytes": 4295
   },
   {
     "relative_file_path": "flutter/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-40x40@1x.png",
@@ -474,10 +490,10 @@
         40
       ]
     ],
-    "color_mode": "RGB",
-    "has_alpha_channel": false,
+    "color_mode": "RGBA",
+    "has_alpha_channel": true,
     "architectural_purpose": "iOS / iPadOS Application Bundle Icon",
-    "file_size_bytes": 989
+    "file_size_bytes": 1455
   },
   {
     "relative_file_path": "flutter/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-40x40@2x.png",
@@ -490,10 +506,10 @@
         80
       ]
     ],
-    "color_mode": "RGB",
-    "has_alpha_channel": false,
+    "color_mode": "RGBA",
+    "has_alpha_channel": true,
     "architectural_purpose": "iOS / iPadOS Application Bundle Icon",
-    "file_size_bytes": 2086
+    "file_size_bytes": 3766
   },
   {
     "relative_file_path": "flutter/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-40x40@3x.png",
@@ -506,10 +522,10 @@
         120
       ]
     ],
-    "color_mode": "RGB",
-    "has_alpha_channel": false,
+    "color_mode": "RGBA",
+    "has_alpha_channel": true,
     "architectural_purpose": "iOS / iPadOS Application Bundle Icon",
-    "file_size_bytes": 3087
+    "file_size_bytes": 6664
   },
   {
     "relative_file_path": "flutter/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-60x60@2x.png",
@@ -522,10 +538,10 @@
         120
       ]
     ],
-    "color_mode": "RGB",
-    "has_alpha_channel": false,
+    "color_mode": "RGBA",
+    "has_alpha_channel": true,
     "architectural_purpose": "iOS / iPadOS Application Bundle Icon",
-    "file_size_bytes": 3087
+    "file_size_bytes": 6664
   },
   {
     "relative_file_path": "flutter/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-60x60@3x.png",
@@ -538,10 +554,10 @@
         180
       ]
     ],
-    "color_mode": "RGB",
-    "has_alpha_channel": false,
+    "color_mode": "RGBA",
+    "has_alpha_channel": true,
     "architectural_purpose": "iOS / iPadOS Application Bundle Icon",
-    "file_size_bytes": 4914
+    "file_size_bytes": 11995
   },
   {
     "relative_file_path": "flutter/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-76x76@1x.png",
@@ -554,10 +570,10 @@
         76
       ]
     ],
-    "color_mode": "RGB",
-    "has_alpha_channel": false,
+    "color_mode": "RGBA",
+    "has_alpha_channel": true,
     "architectural_purpose": "iOS / iPadOS Application Bundle Icon",
-    "file_size_bytes": 1964
+    "file_size_bytes": 3537
   },
   {
     "relative_file_path": "flutter/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-76x76@2x.png",
@@ -570,10 +586,10 @@
         152
       ]
     ],
-    "color_mode": "RGB",
-    "has_alpha_channel": false,
+    "color_mode": "RGBA",
+    "has_alpha_channel": true,
     "architectural_purpose": "iOS / iPadOS Application Bundle Icon",
-    "file_size_bytes": 4152
+    "file_size_bytes": 9478
   },
   {
     "relative_file_path": "flutter/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-83.5x83.5@2x.png",
@@ -586,10 +602,10 @@
         167
       ]
     ],
-    "color_mode": "RGB",
-    "has_alpha_channel": false,
+    "color_mode": "RGBA",
+    "has_alpha_channel": true,
     "architectural_purpose": "iOS / iPadOS Application Bundle Icon",
-    "file_size_bytes": 4494
+    "file_size_bytes": 10733
   },
   {
     "relative_file_path": "flutter/windows/runner/resources/app_icon.ico",
@@ -629,7 +645,7 @@
     "color_mode": "RGBA (32-bit)",
     "has_alpha_channel": true,
     "architectural_purpose": "Windows Flutter Runner Executable Icon",
-    "file_size_bytes": 372526
+    "file_size_bytes": 24315
   },
   {
     "relative_file_path": "res/128x128.png",
@@ -642,10 +658,10 @@
         128
       ]
     ],
-    "color_mode": "P",
+    "color_mode": "RGBA",
     "has_alpha_channel": true,
     "architectural_purpose": "Linux Desktop Standard Icon (128x128)",
-    "file_size_bytes": 2978
+    "file_size_bytes": 6875
   },
   {
     "relative_file_path": "res/128x128@2x.png",
@@ -661,7 +677,7 @@
     "color_mode": "RGBA",
     "has_alpha_channel": true,
     "architectural_purpose": "Linux Desktop HiDPI Icon (256x256)",
-    "file_size_bytes": 7689
+    "file_size_bytes": 10310
   },
   {
     "relative_file_path": "res/32x32.png",
@@ -674,10 +690,10 @@
         32
       ]
     ],
-    "color_mode": "P",
+    "color_mode": "RGBA",
     "has_alpha_channel": true,
     "architectural_purpose": "Linux Desktop Small Icon (32x32)",
-    "file_size_bytes": 938
+    "file_size_bytes": 1135
   },
   {
     "relative_file_path": "res/64x64.png",
@@ -690,10 +706,10 @@
         64
       ]
     ],
-    "color_mode": "P",
+    "color_mode": "RGBA",
     "has_alpha_channel": true,
     "architectural_purpose": "Linux Desktop Medium Icon (64x64)",
-    "file_size_bytes": 1795
+    "file_size_bytes": 2687
   },
   {
     "relative_file_path": "res/design.svg",
@@ -709,7 +725,7 @@
     "color_mode": "Vector / XML",
     "has_alpha_channel": true,
     "architectural_purpose": "Vector Design Master Icon",
-    "file_size_bytes": 25758
+    "file_size_bytes": 13214
   },
   {
     "relative_file_path": "res/icon.ico",
@@ -749,7 +765,7 @@
     "color_mode": "RGBA (32-bit)",
     "has_alpha_channel": true,
     "architectural_purpose": "Windows Manifest / Executable Application Icon",
-    "file_size_bytes": 372526
+    "file_size_bytes": 24315
   },
   {
     "relative_file_path": "res/icon.png",
@@ -765,7 +781,7 @@
     "color_mode": "RGBA",
     "has_alpha_channel": true,
     "architectural_purpose": "Master High-Resolution Application Icon (1024x1024)",
-    "file_size_bytes": 40256
+    "file_size_bytes": 190076
   },
   {
     "relative_file_path": "res/logo-header.svg",
@@ -781,7 +797,7 @@
     "color_mode": "Vector / XML",
     "has_alpha_channel": true,
     "architectural_purpose": "Vector Application Header / Banner Graphic",
-    "file_size_bytes": 8536
+    "file_size_bytes": 13214
   },
   {
     "relative_file_path": "res/logo.svg",
@@ -797,7 +813,7 @@
     "color_mode": "Vector / XML",
     "has_alpha_channel": true,
     "architectural_purpose": "Vector Application Logo",
-    "file_size_bytes": 1352
+    "file_size_bytes": 13214
   },
   {
     "relative_file_path": "res/mac-icon.png",
@@ -810,10 +826,10 @@
         1024
       ]
     ],
-    "color_mode": "P",
+    "color_mode": "RGBA",
     "has_alpha_channel": true,
     "architectural_purpose": "macOS Master Application Icon (1024x1024)",
-    "file_size_bytes": 35842
+    "file_size_bytes": 190076
   },
   {
     "relative_file_path": "res/mac-tray-dark-x2.png",
@@ -826,10 +842,10 @@
         60
       ]
     ],
-    "color_mode": "P",
+    "color_mode": "RGBA",
     "has_alpha_channel": true,
     "architectural_purpose": "macOS Menu Bar Tray Dark Mode Icon (60x60)",
-    "file_size_bytes": 612
+    "file_size_bytes": 2504
   },
   {
     "relative_file_path": "res/mac-tray-light-x2.png",
@@ -842,10 +858,10 @@
         48
       ]
     ],
-    "color_mode": "LA",
+    "color_mode": "RGBA",
     "has_alpha_channel": true,
     "architectural_purpose": "macOS Menu Bar Tray Light Mode Icon (48x48)",
-    "file_size_bytes": 586
+    "file_size_bytes": 1879
   },
   {
     "relative_file_path": "res/rustdesk-banner.svg",
@@ -861,7 +877,7 @@
     "color_mode": "Vector / XML",
     "has_alpha_channel": true,
     "architectural_purpose": "Vector Branding Banner Graphic",
-    "file_size_bytes": 5329
+    "file_size_bytes": 13214
   },
   {
     "relative_file_path": "res/scalable.svg",
@@ -877,7 +893,7 @@
     "color_mode": "Vector / XML",
     "has_alpha_channel": true,
     "architectural_purpose": "Vector Scalable Application Icon",
-    "file_size_bytes": 4339
+    "file_size_bytes": 13214
   },
   {
     "relative_file_path": "res/tray-icon.ico",
@@ -917,6 +933,6 @@
     "color_mode": "RGBA (32-bit)",
     "has_alpha_channel": true,
     "architectural_purpose": "Windows System Tray Icon",
-    "file_size_bytes": 372526
+    "file_size_bytes": 24315
   }
 ]
